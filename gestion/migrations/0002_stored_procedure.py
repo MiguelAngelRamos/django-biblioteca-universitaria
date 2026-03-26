@@ -9,7 +9,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.RunSQL(
             sql='''
-            CREATE OR REPLACE PRODUCEDURE sp_calcular_multa(p_estudiante_id INT)
+            CREATE OR REPLACE PROCEDURE sp_calcular_multa(p_estudiante_id INT)
             LANGUAGE plpgsql
             AS $$
             BEGIN
