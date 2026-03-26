@@ -6,6 +6,7 @@ from .models import Estudiante, Libro, Prestamo, Credencial, Editorial
 from .forms import EstudianteForm, LibroForm, EditorialForm
 from django.urls import reverse_lazy
 from django.contrib import messages
+from django.views import View
 
 # =====================================================================
 # 1. Vistas Genéricas y ORM (CRUD BÁSICO)
@@ -55,24 +56,48 @@ class EditorialCreateView(SuccessMessageMixin, CreateView):
 # =====================================================================
 # 2. Vistas Especiales con SQL Crudo y Stored Procedures
 # =====================================================================
-def reporte_sql_crudo(request):
-    """ SQL .raw() Puro """
-    query = '''
-        SELECT l.* 
-        FROM gestion_libro l
-        INNER JOIN gestion_prestamo p ON l.id_libro = p.libro_id
-        WHERE p.estado = 'Activo'
-    '''
-    libros_prestados = Libro.objects.raw(query)
-    return render(request, 'gestion/reporte_raw_sql.html', {'libros': libros_prestados})
+class ReporteSQLCrudoView(ListView):
+    template_name = 'gestion/reporte_raw_sql.html'
+    context_object_name = 'libros'
 
-def ejecutar_procedimiento_cursor(request, estudiante_id):
-    """ Invoca procedimiento almacenado usando Cursor """
-    with connection.cursor() as cursor:
-        try:
-            cursor.callproc('sp_calcular_multas', [estudiante_id])
-            messages.success(request, f'¡SP de PostgreSQL ejecutado! Multas calculadas para ID {estudiante_id}.')
-        except Exception as e:
-            messages.error(request, f'Error al ejecutar el procedimiento en PostgreSQL: {str(e)}')
+    def get_queryset(self):
+        query = '''
+            SELECT l.* 
+            FROM gestion_libro l
+            INNER JOIN gestion_prestamo p ON l.id_libro = p.libro_id
+            WHERE p.estado = 'Activo'
+        '''
+        return Libro.objects.raw(query)
+    
+class EjecutarProcedimientoView(View):
+    def get(self, request, estudiante_id, *args, **kwargs):
+        """ Invoca procedimiento almacenado usando Cursor """
+        with connection.cursor() as cursor:
+            try:
+                cursor.callproc('sp_calcular_multa', [estudiante_id])
+                messages.success(request, f'¡SP de PostgreSQL ejecutado! Multas calculadas para ID {estudiante_id}.')
+            except Exception as e:
+                messages.error(request, f'Error al ejecutar el procedimiento en PostgreSQL: {str(e)}')
+                
+        return redirect('estudiante_list')
+# def reporte_sql_crudo(request):
+#     """ SQL .raw() Puro """
+#     query = '''
+#         SELECT l.* 
+#         FROM gestion_libro l
+#         INNER JOIN gestion_prestamo p ON l.id_libro = p.libro_id
+#         WHERE p.estado = 'Activo'
+#     '''
+#     libros_prestados = Libro.objects.raw(query)
+#     return render(request, 'gestion/reporte_raw_sql.html', {'libros': libros_prestados})
+
+# def ejecutar_procedimiento_cursor(request, estudiante_id):
+#     """ Invoca procedimiento almacenado usando Cursor """
+#     with connection.cursor() as cursor:
+#         try:
+#             cursor.callproc('sp_calcular_multas', [estudiante_id])
+#             messages.success(request, f'¡SP de PostgreSQL ejecutado! Multas calculadas para ID {estudiante_id}.')
+#         except Exception as e:
+#             messages.error(request, f'Error al ejecutar el procedimiento en PostgreSQL: {str(e)}')
             
-    return redirect('estudiante_list')
+#     return redirect('estudiante_list')
