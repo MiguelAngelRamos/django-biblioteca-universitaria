@@ -1,1 +1,51 @@
-<h1>Lista de Estudiantes</h1>
+<div class="card shadow-sm border-0 rounded-4">
+    <div class="card-header bg-success text-white d-flex justify-content-between align-items-center rounded-top-4 py-3">
+        <h4 class="mb-0"><i class="fa-solid fa-user-graduate"></i> Gestión de Estudiantes y SPs</h4>
+        <a href="{% url 'estudiante_create' %}" class="btn btn-sm btn-light text-success fw-bold"><i class="fa-solid fa-plus"></i> Dar de Alta Estudiante</a>
+    </div>
+    <div class="card-body p-4">
+        <div class="alert alert-info border-0 shadow-sm mb-4">
+            <i class="fa-solid fa-circle-info"></i> Aquí demostramos la ejecución de <strong>Cursores y Procedimientos Almacenados</strong> 
+            (rubro avanzado). Al hacer clic en ejecutar, se invoca código SQL que calcula multas en Base de Datos de forma nativa.
+        </div>
+        
+        <table class="table table-striped align-middle">
+            <thead class="table-success">
+                <tr>
+                    <th>Matrícula</th>
+                    <th>Nombre Completo</th>
+                    <th class="text-center">Credencial (Relación 1:1)</th>
+                    <th class="text-end">Acción Avanzada (Cursores)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for estudiante in estudiantes %}
+                <tr>
+                    <td><strong class="text-primary">{{ estudiante.matricula }}</strong></td>
+                    <td>{{ estudiante.nombre_completo }}</td>
+                    <td class="text-center">
+                        {% if estudiante.credencial.activa %}
+                           <span class="badge bg-success rounded-pill px-3"><i class="fa-solid fa-check"></i> Activa</span>
+                        {% else %}
+                           <span class="badge bg-secondary rounded-pill px-3"><i class="fa-solid fa-xmark"></i> Inactiva o N/A</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-end">
+                        <!-- Botón para disparar vista de Cursor -->
+                        <a href="{% url 'ejecutar_sp' estudiante.id_estudiante %}" class="btn btn-sm btn-danger rounded-pill shadow-sm px-3">
+                            <i class="fa-solid fa-bolt"></i> Ejecutar SP (Calcular Multa)
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="text-center text-muted py-5">
+                        <i class="fa-solid fa-ghost fa-3x mb-3 text-light"></i><br>
+                        No hay estudiantes.<br> Carga datos desde el admin nativo para probar los Stored Procedures.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

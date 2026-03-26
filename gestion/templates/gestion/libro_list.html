@@ -1,1 +1,54 @@
-<h1>Lista de Libros</h1>
+{% extends 'base.html' %}
+
+<!-- Contenedor dinámico -->
+{% block content %}
+<div class="card shadow-sm border-0 rounded-4">
+  <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center rounded-top-4 py-3">
+    <h4 class="mb-0"><i class="fa-solid fa-book-open-reader"></i> Catálogo de Libros (CRUD ORM Genérico)</h4>
+    <div>
+      <a href="{% url 'libro_create' %}" class="btn btn-sm btn-light text-primary fw-bold me-2"><i
+          class="fa-solid fa-plus"></i> Nuevo Libro</a>
+      <span class="badge bg-light text-primary">Relación 1:N y N:M</span>
+    </div>
+  </div>
+  <div class="card-body p-4">
+    <table class="table table-hover align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>Título del Libro</th>
+          <th>Editorial (1:N)</th>
+          <th>Stock</th>
+          <th class="text-center">Acciones ORM</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for libro in libros %}
+        <tr>
+          <td class="fw-bold text-secondary">{{ libro.titulo }}</td>
+          <td>{{ libro.editorial.nombre }}</td>
+          <td>
+            <span class="badge bg-{{ libro.stock_disponible|yesno:'success,danger' }}">
+              {{ libro.stock_disponible }} un.
+            </span>
+          </td>
+          <td class="text-center">
+            <button class="btn btn-sm btn-outline-primary"
+              onclick="alert('Funcionalidad CRUD estándar usando UpdateView o DeleteView.')">
+              <i class="fa-solid fa-pen-to-square"></i> Editar
+            </button>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="4" class="text-center text-muted py-4">
+            <i class="fa-solid fa-folder-open fa-3x mb-3 text-light"></i><br>
+            No hay libros registrados aún. Usa el panel de administrador para crear editoriales y libros.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}
