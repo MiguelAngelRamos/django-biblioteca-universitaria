@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
             AS $$
             BEGIN
                 UPDATE gestion_prestamo
-                SET multa_generado = 25.50
+                SET multa_generada = 25.50
                 WHERE estudiante_id = p_estudiante_id
                   AND estado = 'Activo';
                 COMMIT;

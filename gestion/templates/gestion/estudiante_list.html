@@ -25,7 +25,19 @@
                 {% for estudiante in estudiantes %}
                 <tr>
                     <td><strong class="text-primary">{{ estudiante.matricula }}</strong></td>
-                    <td>{{ estudiante.nombre_completo }}</td>
+                    <td>
+                        <span class="d-block mb-1">{{ estudiante.nombre_completo }}</span>
+                        <!-- Imprimimos al vuelo la Data gestionada por el SP en la BD -->
+                        {% for prestamo in estudiante.prestamo_set.all %}
+                            {% if prestamo.estado == 'Activo' %}
+                                {% if prestamo.multa_generada > 0 %}
+                                    <span class="badge bg-danger rounded-pill shadow-sm" style="font-size: 0.75rem;"><i class="fa-solid fa-triangle-exclamation"></i> Multa BD: ${{ prestamo.multa_generada }}</span>
+                                {% else %}
+                                    <span class="badge bg-secondary rounded-pill shadow-sm" style="font-size: 0.75rem;"><i class="fa-solid fa-book"></i> Préstamo al día</span>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    </td>
                     <td class="text-center">
                         {% if estudiante.credencial.activa %}
                            <span class="badge bg-success rounded-pill px-3"><i class="fa-solid fa-check"></i> Activa</span>

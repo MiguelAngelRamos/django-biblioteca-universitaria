@@ -42,9 +42,9 @@
                 <script>
                     Swal.fire({
                         icon: '{{ message.tags }}' === 'error' ? 'error' : 'success',
-                        title: 'Confirmación',
-                        text: '{{ message }}',
-                        timer: 3500,
+                        title: 'Mensaje del Sistema',
+                        text: '{{ message|escapejs }}', // El escapejs evita que las comillas o saltos de línea rompan el JavaScript visual
+                        timer: 5000,
                         showConfirmButton: false,
                         position: 'top-end',
                         toast: true

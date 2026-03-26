@@ -74,7 +74,7 @@ class EjecutarProcedimientoView(View):
         """ Invoca procedimiento almacenado usando Cursor """
         with connection.cursor() as cursor:
             try:
-                cursor.callproc('sp_calcular_multa', [estudiante_id])
+                cursor.execute('CALL sp_calcular_multa(%s)', [estudiante_id])
                 messages.success(request, f'¡SP de PostgreSQL ejecutado! Multas calculadas para ID {estudiante_id}.')
             except Exception as e:
                 messages.error(request, f'Error al ejecutar el procedimiento en PostgreSQL: {str(e)}')
