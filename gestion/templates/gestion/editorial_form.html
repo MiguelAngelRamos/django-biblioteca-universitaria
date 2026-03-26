@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center mt-4">
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0 rounded-4">
+            <div class="card-header bg-secondary text-white rounded-top-4 py-3">
+                <h4 class="mb-0"><i class="fa-solid fa-building"></i> Añadir Nueva Editorial</h4>
+            </div>
+            <div class="card-body p-4">
+                <form method="POST" autocomplete="off" novalidate>
+                    {% csrf_token %}
+                    
+                    {% for field in form %}
+                        <div class="mb-3">
+                            <label for="{{ field.id_for_label }}" class="form-label fw-bold text-secondary">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ field.errors|striptags }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                    
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-secondary fw-bold py-2 shadow-sm">
+                            <i class="fa-solid fa-save"></i> Generar Editorial
+                        </button>
+                        <a href="{% url 'libro_create' %}" class="btn btn-outline-secondary">Cancelar y volver a Libros</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
