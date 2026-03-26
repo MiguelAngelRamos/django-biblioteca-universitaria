@@ -53,7 +53,7 @@ class EditorialCreateView(SuccessMessageMixin, CreateView):
     success_message = "¡Editorial añadida!"
 
 # =====================================================================
-# 2. Vistas Especiales con SLQ Crudo y Stored Procedures
+# 2. Vistas Especiales con SQL Crudo y Stored Procedures
 # =====================================================================
 def reporte_sql_crudo(request):
     """ SQL .raw() Puro """
